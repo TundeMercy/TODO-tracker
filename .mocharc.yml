@@ -1,0 +1,6 @@
+extension:
+  - js
+require: '@babel/register'
+recursive: true
+timeout: 1000
+exit: true

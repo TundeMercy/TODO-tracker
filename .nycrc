@@ -1,0 +1,15 @@
+{
+  "all": true,
+  "include": [
+    "src"
+  ],
+  "requires": [
+    "@babel/register"
+  ],
+  "exclude": [
+    "src/index.js",
+    "**/database/seeders",
+    "**/database/migrations",
+    "**/database/models"
+  ]
+}
