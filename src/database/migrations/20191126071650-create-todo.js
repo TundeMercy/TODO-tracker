@@ -6,12 +6,22 @@ export default {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    name: {
+    title: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    description: {
       type: Sequelize.STRING
     },
     dueDate: {
       type: Sequelize.DATE,
-      field: 'due_date'
+      field: 'due_date',
+      allowNull: false,
+    },
+    status: {
+      type: Sequelize.ENUM('todo', 'completed'),
+      allowNull: false,
+      defaultValue: 'todo'
     },
     createdAt: {
       allowNull: false,

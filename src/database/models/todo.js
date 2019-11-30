@@ -6,8 +6,23 @@ export default (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
     },
-    name: DataTypes.STRING,
-    due_date: DataTypes.DATE,
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    description: {
+      type: DataTypes.STRING
+    },
+    dueDate: {
+      type: DataTypes.DATE,
+      field: 'due_date',
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.ENUM('todo', 'completed'),
+      allowNull: false,
+      defaultValue: 'todo'
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

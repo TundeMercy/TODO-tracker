@@ -15,7 +15,7 @@ export const createUser = async (req, res) => {
   try {
     let user = await User.create(req.body);
     user = await user.getSafeDataValues();
-    const token = generateToken(user);
+    const token = generateToken(user.id);
 
     return successResponse(
       res,
@@ -24,7 +24,6 @@ export const createUser = async (req, res) => {
       { user, token }
     );
   } catch (error) {
-    console.log(error);
     return serverError(res);
   }
 };
@@ -39,16 +38,16 @@ export const createUser = async (req, res) => {
 export const signin = async (req, res) => {
   const { password, email } = req.body;
   try {
-    const getUser = await User.findOne({ where: { email } });
-    if (!getUser) {
+    let user = await User.findOne({ where: { email } });
+    if (!user) {
       return errorResponse(res, 400, 'Email/Password incorrect');
     }
-    const comparePassword = await getUser.validatePassword(password);
+    const comparePassword = await user.validatePassword(password);
     if (!comparePassword) {
       return errorResponse(res, 400, 'Email/Password incorrect');
     }
-    const token = generateToken({ email });
-    const user = await getUser.getSafeDataValues();
+    user = await user.getSafeDataValues();
+    const token = generateToken(user.id);
     return successResponse(res, 200, 'Login successful', { user, token });
   } catch (error) {
     return serverError(res);

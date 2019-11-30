@@ -12,36 +12,36 @@ const { User } = database;
  * @param {obj} next The next function
  * @returns {Function} response
  */
-export default {
-  checkExistingUser: async (req, res, next) => {
-    const { email } = req.body;
-    const user = await User.findOne({ where: { email } });
-    if (user) {
-      return errorResponse(res, 409, 'user already exist');
-    }
-    return next();
-  },
 
-  checkToken: (req, res, next) => {
-    let token = req.headers['x-access-token'] || req.headers.authorization;
-    if (token.startsWith('Bearer ')) {
-      token = token.slice(7, token.length);
-    }
-
-    if (token) {
-      const { JWT_KEY } = process.env;
-      jwt.verify(token, JWT_KEY, (err, user) => {
-        if (err) {
-          return errorResponse(
-            res,
-            400,
-            'Invalid token, please provide a valid token'
-          );
-        }
-        req.user = user;
-        next();
-      });
-    }
-    return errorResponse(res, 404, 'Auth token is not supplied');
-  },
+const checkExistingUser = async (req, res, next) => {
+  const { email } = req.body;
+  const user = await User.findOne({ where: { email } });
+  if (user) {
+    return errorResponse(res, 409, 'user already exist');
+  }
+  return next();
 };
+
+const authenticateUser = (req, res, next) => {
+  let token = req.headers.authorization || req.headers['x-access-token'];
+  if (token) {
+    if (token.startsWith('Bearer ')) {
+      token = token.slice(7);
+    }
+    const { JWT_KEY } = process.env;
+    return jwt.verify(token, JWT_KEY, (err, user) => {
+      if (err) {
+        return errorResponse(
+          res,
+          400,
+          'Invalid token, please provide a valid token'
+        );
+      }
+      req.user = user;
+      return next();
+    });
+  }
+  return errorResponse(res, 403, 'Please sign in first');
+};
+
+export { authenticateUser, checkExistingUser };
